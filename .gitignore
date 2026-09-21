@@ -1,0 +1,15 @@
+# Proteus autosave / backup - keep only the canonical .pdsprj
+*.pdsbak
+*.workspace
+*Backup*.pds*
+*.pdsprj.*.workspace
+
+# Windows / macOS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*~
