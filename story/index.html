@@ -1,50 +1,124 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ship Cargo Loading System — A Lab Story</title>
-<link rel="stylesheet" href="styles.css">
+<title>Ship Cargo Loading System — a small dock story</title>
+<meta name="description" content="A warm walkthrough of a student dock circuit: accumulate, compare, display, depart.">
+<meta name="theme-color" content="#f3ecdd">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Ship Cargo Loading System — a small dock story">
+<meta property="og:description" content="Accumulate, compare, display, depart. A Proteus final build.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23c2522b'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%23f7f0e3' font-family='Georgia'%3EH%3C/text%3E%3C/svg%3E">
+<script>try{var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:hsl(44 38% 94%);--bg-surface:hsl(44 36% 90%);--text:hsl(28 18% 16%);--text-dim:hsl(28 12% 38%);--muted:hsl(30 14% 72%);--accent:hsl(20 65% 48%);--accent-dim:hsl(20 50% 38%);--accent-soft:hsl(20 70% 88%);--py:clamp(72px,10vw,128px);--px:clamp(20px,5vw,64px)}
+:root[data-theme="dark"]{--bg:hsl(28 12% 10%);--bg-surface:hsl(28 12% 14%);--text:hsl(40 30% 88%);--text-dim:hsl(36 16% 66%);--muted:hsl(28 10% 32%);--accent:hsl(20 72% 62%);--accent-dim:hsl(20 60% 52%);--accent-soft:hsl(20 45% 22%)}
+html{scrollbar-width:thin;scrollbar-color:var(--accent-dim) var(--bg)}
+html::-webkit-scrollbar{width:8px}html::-webkit-scrollbar-track{background:var(--bg)}html::-webkit-scrollbar-thumb{background:var(--accent-dim);border-radius:8px}html::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+*{box-sizing:border-box}html,body{overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:1.05rem;line-height:1.6}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.02;background-image:radial-gradient currentColor 1px,transparent 1px;background-size:5px 5px;z-index:0}
+header,main,footer{position:relative;z-index:1}
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:16px;padding:12px var(--px);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid color-mix(in srgb,var(--text) 10%,transparent)}
+.brand{font-family:Fraunces,Georgia,serif;font-weight:600;text-decoration:none;color:var(--text)}
+nav{display:flex;gap:14px;margin-left:auto;font-size:.95rem}
+nav a{color:var(--text-dim);text-decoration:none}
+nav a:hover{color:var(--accent)}
+.btn{font:inherit;font-weight:600;border-radius:999px;padding:10px 20px;min-height:44px;cursor:pointer;border:1px solid transparent;text-decoration:none;display:inline-block}
+.btn-p{background:var(--accent);color:#fff8ef}
+.btn-s{background:transparent;border-color:color-mix(in srgb,var(--text) 22%,transparent);color:var(--text)}
+.btn:focus-visible,.sw:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1020px;margin:0 auto;padding:0 var(--px)}
+section{padding:var(--py) 0}
+.eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);display:inline-block;border:1px solid color-mix(in srgb,var(--text) 16%,transparent);border-radius:999px;padding:6px 14px;background:var(--bg-surface)}
+h1{font-family:Fraunces,Georgia,serif;font-weight:560;letter-spacing:-.01em;line-height:1;font-size:clamp(2.8rem,7vw,5rem);margin:.4em 0}
+h2{font-family:"Hanken Grotesk",system-ui,sans-serif;font-weight:700;font-size:clamp(1.6rem,3.4vw,2.3rem);margin:0 0 .4em}
+h2 em{font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:500;color:var(--accent)}
+.lead{font-size:1.2rem;color:var(--text-dim);max-width:58ch}
+.hero-visual{margin-top:28px;border-radius:20px;overflow:hidden;border:1px solid color-mix(in srgb,var(--text) 12%,transparent);box-shadow:0 18px 40px -22px color-mix(in srgb,var(--accent) 45%,transparent)}
+.hero-visual img{width:100%;display:block}
+.cap{font-size:.85rem;color:var(--text-dim);padding:10px 16px;background:var(--bg-surface)}
+.scrollcue{margin-top:18px;color:var(--text-dim);font-size:.9rem;animation:bob 2.4s ease-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(6px);opacity:.3}}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.chips span{border:1px solid color-mix(in srgb,var(--text) 16%,transparent);border-radius:999px;padding:8px 16px;background:var(--bg-surface)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media(max-width:820px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--bg-surface);border-radius:18px;padding:22px;box-shadow:0 14px 30px -24px color-mix(in srgb,var(--accent) 40%,transparent)}
+.num{font-family:Fraunces,Georgia,serif;font-size:2.2rem;color:var(--accent)}
+.swrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.sw{font:inherit;min-height:44px;border-radius:12px;border:1px solid color-mix(in srgb,var(--text) 18%,transparent);background:var(--bg);color:var(--text);cursor:pointer}
+.sw[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.digits{display:flex;gap:10px;margin-top:8px}
+.dg{font-family:Fraunces,Georgia,serif;font-size:3rem;min-width:76px;text-align:center;background:var(--bg);border-radius:14px;padding:2px 0 8px;border:1px solid color-mix(in srgb,var(--text) 12%,transparent)}
+.leds{display:flex;gap:14px;margin-top:10px;font-size:.9rem;color:var(--text-dim)}
+.dot{width:13px;height:13px;border-radius:50%;background:color-mix(in srgb,var(--text) 18%,transparent);display:inline-block;margin-right:6px}
+.on-y{background:var(--accent)}.on-r{background:#c23b2e}.on-g{background:#4a7c59}
+.trace{font-family:ui-monospace,Menlo,monospace;font-size:.82rem;color:var(--text-dim);white-space:pre-wrap;margin-top:10px}
+footer{border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent);padding:40px 0 0}
+.wordmark{font-family:Fraunces,Georgia,serif;font-size:clamp(3rem,12vw,8rem);line-height:1;color:color-mix(in srgb,var(--text) 16%,transparent);white-space:nowrap;overflow:hidden}
+@media not (prefers-reduced-motion: reduce){.hero-a{opacity:0;transform:translateY(24px);filter:blur(5px);animation:rise .9s ease-out forwards}.hero-a:nth-child(2){animation-delay:.16s}.hero-a:nth-child(3){animation-delay:.32s}.hero-v{opacity:0;transform:translateY(20px) scale(.96);filter:blur(5px);animation:rise 1s ease-out .5s forwards}.scrollcue{animation:bob 2.4s ease-out 1.4s infinite}.reveal-item{opacity:.001;transform:translateY(18px);filter:blur(5px);transition:opacity .5s ease-out,transform .5s ease-out,filter .5s ease-out}.reveal-item.on{opacity:1;transform:none;filter:none}}
+@keyframes rise{to{opacity:1;transform:none;filter:none}}
+@media (prefers-reduced-motion: reduce){.reveal-item{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.scrollcue,.hero-a,.hero-v{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}}
+::view-transition-new(root){animation:none}
+</style>
 </head>
 <body>
-<div class="bg" aria-hidden="true"></div>
-<div class="progress" id="bar"></div>
-<div class="wrap">
-  <section class="act reveal"><div class="kicker">scroll</div><h1 class="hero-line">So, we had to do a project.</h1><p class="sub">One dock. Four switches. A threshold that decides everything.</p></section>
-  <section class="act reveal"><div class="kicker">the course</div><h2 class="hero-line">CSE 4206 — Digital Logic Design Lab</h2><p class="sub">IUT · Summer 2024–2025 · Proteus · 74LS TTL</p></section>
-  <section class="act reveal"><div class="kicker">the build</div><h2 class="title">SHIP CARGO <span>LOADING SYSTEM</span></h2><p class="sub">Accumulate · Compare · Display · Depart. Full ship clears the dock by itself.</p><div class="team"><span>MD. Sadman Saif Zarif</span><span>Ayesha Chowdhury Aronti</span><span>Sanjid Ahsan</span></div></section>
-  <div class="stage" id="circuit">
-    <div class="kicker">the circuit</div>
-    <div class="flow"></div>
-    <div class="circuit"><img src="../hardware/screenshots/full-schematic.png" alt="Final Proteus schematic"></div>
-    <div class="pins">
-      <div class="pin"><img src="../hardware/screenshots/01-input-validation.png" alt="Input"><div>01 · OR-tree validation</div></div>
-      <div class="pin"><img src="../hardware/screenshots/02-accumulator.png" alt="Accumulator"><div>02 · U7 + U6 loop</div></div>
-      <div class="pin"><img src="../hardware/screenshots/03-bcd-display.png" alt="BCD"><div>03 · +6 BCD 0–15</div></div>
-      <div class="pin"><img src="../hardware/screenshots/04-comparator-counter.png" alt="Comparator"><div>04 · U9 + U10 departures</div></div>
-    </div>
-  </div>
-  <section class="act reveal"><div class="kicker">how it flows</div><div class="steps">
-    <div class="step"><b>OR-tree rejects empties.</b> <span class="sub">SW=0 → no pulse, no load.</span></div>
-    <div class="step"><b>Adder feeds the register.</b> <span class="sub">U7 adds SW+Q, PL latches U6.</span></div>
-    <div class="step"><b>BCD makes it readable.</b> <span class="sub">Q≥10 → +6, tens shows 1.</span></div>
-    <div class="step"><b>Comparator decides.</b> <span class="sub">Yellow below, red over, green exact.</span></div>
-    <div class="step"><b>Full ship sails itself.</b> <span class="sub">QA=B → count+1, MR clears to 00.</span></div>
-  </div></section>
-  <section class="act reveal"><div class="kicker">play it</div><h2>Pulse a ship through.</h2>
-    <div class="bench">
-      <div class="card"><div class="swrow">
-        <button class="sw" id="s0">SW0</button><button class="sw" id="s1">SW1</button><button class="sw" id="s2">SW2</button><button class="sw" id="s3">SW3</button>
-      </div><div class="swrow" style="margin-top:8px">
-        <button class="sw" id="b0">B0</button><button class="sw" id="b1">B1</button><button class="sw" id="b2">B2</button><button class="sw" id="b3">B3</button>
-      </div><button class="btn btn-pulse" id="go">Pulse Arrival</button><button class="btn btn-ghost" id="rs">Reset</button></div>
-      <div class="card"><div class="digit"><div class="d" id="t">0</div><div class="d" id="u">0</div><div class="d" id="c">0</div></div>
-      <div class="leds"><span><span class="dot" id="ly"></span>YELLOW</span><span><span class="dot" id="lr"></span>RED</span><span><span class="dot" id="lg"></span>GREEN</span></div>
-      <div class="trace" id="trace">—</div></div>
-    </div>
-  </section>
-  <section class="end reveal"><div class="kicker">proof</div><h2>Report · pdsprj · video</h2><p class="sub"><a href="../docs/final-report.pdf">final-report.pdf</a> · <a href="../hardware/ship-cargo-loading-system.pdsprj">pdsprj</a> · <a href="https://youtu.be/494xMRGCugs">demo video</a></p></section>
-</div>
-<script src="story.js"></script>
+<header class="top"><a class="brand" href="#top">Ship Cargo Loading System</a><nav aria-label="Sections"><a href="#dock">Dock</a><a href="#steps">Steps</a><a href="#play">Play</a><a href="#proof">Proof</a></nav><button class="btn btn-s" id="theme" type="button" aria-label="Toggle theme">Light / dim</button></header>
+<main id="top">
+<section class="wrap" aria-labelledby="h1">
+<div class="hero-a eyebrow">SMALL DOCK · KEPT HONEST</div>
+<h1 id="h1" class="hero-a">So, we had to do a <em style="font-style:italic;color:var(--accent)">project.</em></h1>
+<p class="lead hero-a">One dock. Four switches. A threshold that decides when a ship is full.</p>
+<p class="hero-a"><a class="btn btn-p" href="#dock">See the circuit</a> <a class="btn btn-s" href="#play">Pulse a ship</a></p>
+<figure class="hero-visual hero-v" style="margin:28px 0 0"><img src="../hardware/screenshots/full-schematic.png" alt="Final Proteus schematic"><figcaption class="cap">As built in Proteus. Subsystem crops below.</figcaption></figure>
+<div class="scrollcue hero-v">scroll gently ↓</div>
+</section>
+<section class="wrap" aria-labelledby="h-course"><div class="reveal-item eyebrow">THE COURSE</div><h2 id="h-course">CSE 4206, <em>unhurried.</em></h2><p class="lead reveal-item">Digital Logic Design Lab · IUT Summer 2024–2025 · Proteus · 74LS TTL</p>
+<h2 class="reveal-item" style="margin-top:26px">Ship Cargo <em>Loading System</em></h2>
+<p class="lead reveal-item">Accumulate, compare, display, depart. A full ship clears the dock by itself.</p>
+<div class="chips reveal-item"><span>MD. Sadman Saif Zarif</span><span>Ayesha Chowdhury Aronti</span><span>Sanjid Ahsan</span></div></section>
+<section class="wrap" id="dock" aria-labelledby="h-dock"><div class="reveal-item eyebrow">THE DOCK</div><h2 id="h-dock">One schematic, <em>four corners.</em></h2><div class="grid2">
+<div class="card reveal-item"><div class="num">01</div><h2>OR-tree <em>validation</em></h2><p>Empty ships are turned away before anything latches.</p><img src="../hardware/screenshots/01-input-validation.png" alt="Input validation" style="width:100%;border-radius:12px"></div>
+<div class="card reveal-item"><div class="num">02</div><h2>Adder plus <em>memory</em></h2><p>U7 adds SW and Q. U6 keeps the running total.</p><img src="../hardware/screenshots/02-accumulator.png" alt="Accumulator" style="width:100%;border-radius:12px"></div>
+<div class="card reveal-item"><div class="num">03</div><h2>Readable <em>decimal</em></h2><p>Q of 10 or more gets a plus-six correction.</p><img src="../hardware/screenshots/03-bcd-display.png" alt="BCD display" style="width:100%;border-radius:12px"></div>
+<div class="card reveal-item"><div class="num">04</div><h2>A comparator <em>decides</em></h2><p>Yellow below, red over, green exact. Green counts and clears.</p><img src="../hardware/screenshots/04-comparator-counter.png" alt="Comparator" style="width:100%;border-radius:12px"></div>
+</div></section>
+<section class="wrap" id="steps" aria-labelledby="h-steps"><div class="reveal-item eyebrow">STEPS</div><h2 id="h-steps">Slow freight, <em>five moves.</em></h2>
+<div class="card reveal-item"><div class="num">1</div><p>Set cargo on SW0–SW3. All low means no pulse.</p></div>
+<div class="card reveal-item" style="margin-top:12px"><div class="num">2</div><p>Pulse arrival. The sum lands in U6.</p></div>
+<div class="card reveal-item" style="margin-top:12px"><div class="num">3</div><p>Read tens and units. Ten and above is corrected.</p></div>
+<div class="card reveal-item" style="margin-top:12px"><div class="num">4</div><p>Compare against B0–B3. Watch the three lamps.</p></div>
+<div class="card reveal-item" style="margin-top:12px"><div class="num">5</div><p>On exact match, departures rise by one and the dock returns to zero.</p></div></section>
+<section class="wrap" id="play" aria-labelledby="h-play"><div class="reveal-item eyebrow">PLAY</div><h2 id="h-play">Pulse a ship <em>yourself.</em></h2>
+<div class="grid2"><div class="card reveal-item"><p><b>Cargo</b></p><div class="swrow"><button class="sw" id="s0" type="button" aria-pressed="false">1</button><button class="sw" id="s1" type="button" aria-pressed="false">2</button><button class="sw" id="s2" type="button" aria-pressed="false">4</button><button class="sw" id="s3" type="button" aria-pressed="false">8</button></div><p style="margin-top:12px"><b>Capacity</b></p><div class="swrow"><button class="sw" id="b0" type="button" aria-pressed="false">1</button><button class="sw" id="b1" type="button" aria-pressed="false">2</button><button class="sw" id="b2" type="button" aria-pressed="false">4</button><button class="sw" id="b3" type="button" aria-pressed="false">8</button></div><p><button class="btn btn-p" id="go" type="button">Pulse arrival</button> <button class="btn btn-s" id="rs" type="button">Reset</button></p></div>
+<div class="card reveal-item"><div class="digits"><div class="dg" id="t">0</div><div class="dg" id="u">0</div><div class="dg" id="c">0</div></div><div class="leds"><span><span class="dot" id="ly"></span>Yellow</span><span><span class="dot" id="lr"></span>Red</span><span><span class="dot" id="lg"></span>Green</span></div><div class="trace" id="trace">—</div></div></div></section>
+<section class="wrap" id="proof" aria-labelledby="h-proof"><div class="reveal-item eyebrow">PROOF</div><h2 id="h-proof">Report, file, <em>film.</em></h2><p class="lead reveal-item"><a href="../docs/final-report.pdf">final-report.pdf</a> · <a href="../hardware/ship-cargo-loading-system.pdsprj">pdsprj</a> · <a href="https://youtu.be/494xMRGCugs">demo video</a></p></section>
+</main>
+<footer><div class="wrap"><div class="wordmark" aria-hidden="true">Ship Cargo Loading System</div><p style="color:var(--text-dim);font-size:.9rem">Final submission only · <a href="#top">back to top ↑</a></p></div></footer>
+<script>(function(){if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.reveal-item').forEach(function(el){el.style.opacity='';el.style.transform='';el.style.filter='';});}
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}})},{threshold:.15});
+document.querySelectorAll('.reveal-item').forEach(function(el){io.observe(el);});
+document.getElementById('theme').addEventListener('click',function(ev){
+  function swap(){var h=document.documentElement,n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}}
+  if(document.startViewTransition){var x=ev.clientX||innerWidth-40,y=ev.clientY||40,r=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));var t=document.startViewTransition(swap);t.ready.then(function(){document.documentElement.animate({clipPath:['circle(0 at '+x+'px '+y+'px)','circle('+r+'px at '+x+'px '+y+'px)']},{duration:500,easing:'ease-out',pseudoElement:'::view-transition-new(root)'});});}
+  else swap();
+});
+var Q=0,dep=0,SW=[0,0,0,0],BV=[0,0,0,1];
+function w(){return SW[0]+SW[1]*2+SW[2]*4+SW[3]*8}function bv(){return BV[0]+BV[1]*2+BV[2]*4+BV[3]*8}
+function $(id){return document.getElementById(id)}
+function render(m){var B=bv(),t=Q>=10?1:0,u=Q>=10?Q-10:Q,c=Q<B?'A<B':Q>B?'A>B':'A=B';$('t').textContent=t;$('u').textContent=u;$('c').textContent=dep;$('ly').className='dot'+(c==='A<B'?' on-y':'');$('lr').className='dot'+(c==='A>B'?' on-r':'');$('lg').className='dot'+(c==='A=B'?' on-g':'');$('trace').textContent='SW '+Q+' B '+B+' '+c+' dep '+dep+(m?'\n'+m:'');}
+function sync(){for(var i=0;i<4;i++){$('s'+i).setAttribute('aria-pressed',SW[i]?'true':'false');$('b'+i).setAttribute('aria-pressed',BV[i]?'true':'false');}}
+for(var i=0;i<4;i++)(function(i){$('s'+i).onclick=function(){SW[i]^=1;sync();render();};$('b'+i).onclick=function(){BV[i]^=1;sync();render();};})(i);
+sync();render('Ready.');
+$('go').onclick=function(){var c=w();if(!c){render('Empty ship rejected.');return;}Q=(Q+c)%16;var B=bv();if(Q===B){dep=(dep+1)%10;var q=Q;Q=0;render('Full ship: '+q+'->00, count '+dep);}else render('Loaded '+c+' -> '+Q);};
+$('rs').onclick=function(){Q=0;dep=0;render('Reset.');};
+})();</script>
 </body>
 </html>
