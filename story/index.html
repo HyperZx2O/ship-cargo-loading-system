@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Ship Cargo Loading System — a small dock story</title>
 <meta name="description" content="A warm walkthrough of a student dock circuit: accumulate, compare, display, depart.">
 <meta name="theme-color" content="#f3ecdd">
@@ -15,7 +15,7 @@
 <script>try{var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Hanken+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:hsl(44 38% 94%);--bg-surface:hsl(44 36% 90%);--text:hsl(28 18% 16%);--text-dim:hsl(28 12% 38%);--muted:hsl(30 14% 72%);--accent:hsl(20 68% 42%);--accent-dim:hsl(20 52% 34%);--accent-soft:hsl(20 70% 88%);--py:clamp(72px,10vw,128px);--px:clamp(20px,5vw,64px)}
 :root[data-theme="dark"]{--bg:hsl(28 12% 10%);--bg-surface:hsl(28 12% 14%);--text:hsl(40 30% 88%);--text-dim:hsl(36 16% 66%);--muted:hsl(28 10% 32%);--accent:hsl(20 72% 62%);--accent-dim:hsl(20 60% 52%);--accent-soft:hsl(20 45% 22%)}
@@ -30,17 +30,23 @@ header,main,footer{position:relative;z-index:1}
 nav{display:flex;gap:14px;margin-left:auto;font-size:.95rem}
 nav a{color:var(--text-dim);text-decoration:none}
 nav a:hover{color:var(--accent)}
-.btn{font:inherit;font-weight:600;border-radius:999px;padding:10px 20px;min-height:44px;cursor:pointer;border:1px solid transparent;text-decoration:none;display:inline-block}
+.btn{font:inherit;font-weight:600;border-radius:999px;padding:10px 20px;min-height:44px;cursor:pointer;border:1px solid transparent;text-decoration:none;display:inline-block;transition:transform .15s ease-out,box-shadow .2s ease-out}
+.btn:active{transform:scale(.97)}
 .btn-p{background:var(--accent);color:#fff8ef}
+.sw{font:inherit;min-height:44px;border-radius:12px;border:1px solid color-mix(in srgb,var(--text) 18%,transparent);background:var(--bg);color:var(--text);cursor:pointer;transition:transform .12s ease-out}
+.sw:active{transform:scale(.97)}
 .btn-s{background:transparent;border-color:color-mix(in srgb,var(--text) 22%,transparent);color:var(--text)}
 .btn:focus-visible,.sw:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wrap{max-width:1020px;margin:0 auto;padding:0 var(--px)}
+.wrap{max-width:1020px;margin:0 auto;padding:0 max(var(--px),env(safe-area-inset-left)) 0 max(var(--px),env(safe-area-inset-right))}
 section{padding:var(--py) 0}
 .eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);display:inline-block;border:1px solid color-mix(in srgb,var(--text) 16%,transparent);border-radius:999px;padding:6px 14px;background:var(--bg-surface)}
-h1{font-family:Fraunces,Georgia,serif;font-weight:560;letter-spacing:-.01em;line-height:1;font-size:clamp(2.8rem,7vw,5rem);margin:.4em 0}
-h2{font-family:"Hanken Grotesk",system-ui,sans-serif;font-weight:700;font-size:clamp(1.6rem,3.4vw,2.3rem);margin:0 0 .4em}
+h1{font-family:Fraunces,Georgia,serif;font-weight:560;letter-spacing:-.01em;line-height:1;font-size:clamp(2.8rem,7vw,5rem);margin:.4em 0;text-wrap:balance}
+h2{font-family:"Hanken Grotesk",system-ui,sans-serif;font-weight:700;font-size:clamp(1.6rem,3.4vw,2.3rem);margin:0 0 .4em;text-wrap:balance}
 h2 em{font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:500;color:var(--accent)}
 .lead{font-size:1.2rem;color:var(--text-dim);max-width:58ch}
+h1,h2,.lead,.cap{overflow-wrap:anywhere;hyphens:auto}
+img{max-width:100%}
+.grid2,.chips{min-width:0}
 .hero-visual{margin-top:28px;border-radius:20px;overflow:hidden;border:1px solid color-mix(in srgb,var(--text) 12%,transparent);box-shadow:0 18px 40px -22px color-mix(in srgb,var(--accent) 45%,transparent)}
 .hero-visual img{width:100%;display:block}
 .cap{font-size:.85rem;color:var(--text-dim);padding:10px 16px;background:var(--bg-surface)}
@@ -52,11 +58,18 @@ h2 em{font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:500;color
 @media(max-width:820px){.grid2{grid-template-columns:minmax(0,1fr)}}
 .card{background:var(--bg-surface);border-radius:18px;padding:22px;box-shadow:0 14px 30px -24px color-mix(in srgb,var(--accent) 40%,transparent)}
 .num{font-family:Fraunces,Georgia,serif;font-size:2.2rem;color:var(--accent)}
+#dock .card{box-shadow:0 22px 44px -26px color-mix(in srgb,var(--accent) 55%,transparent)}
+#dock .num{font-size:2.8rem}
+#dock .card img{transition:transform .25s ease-out}
+#dock .card:hover img{transform:scale(1.015)}
 .swrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
 .sw{font:inherit;min-height:44px;border-radius:12px;border:1px solid color-mix(in srgb,var(--text) 18%,transparent);background:var(--bg);color:var(--text);cursor:pointer}
 .sw[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
 .digits{display:flex;gap:10px;margin-top:8px}
-.dg{font-family:Fraunces,Georgia,serif;font-size:3rem;min-width:76px;text-align:center;background:var(--bg);border-radius:14px;padding:2px 0 8px;border:1px solid color-mix(in srgb,var(--text) 12%,transparent)}
+::selection{background:var(--accent);color:#fff8ef}
+.dg{font-family:Fraunces,Georgia,serif;font-size:3rem;min-width:76px;text-align:center;background:var(--bg);border-radius:14px;padding:2px 0 8px;border:1px solid color-mix(in srgb,var(--text) 12%,transparent);font-variant-numeric:tabular-nums}
+.dg.hot{box-shadow:0 0 0 2px var(--accent)}
+::selection{background:var(--accent);color:#fff8ef}
 .leds{display:flex;gap:14px;margin-top:10px;font-size:.9rem;color:var(--text-dim)}
 .dot{width:13px;height:13px;border-radius:50%;background:color-mix(in srgb,var(--text) 18%,transparent);display:inline-block;margin-right:6px}
 .on-y{background:var(--accent)}.on-r{background:#c23b2e}.on-g{background:#4a7c59}
@@ -65,7 +78,9 @@ footer{border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent);paddi
 .wordmark{font-family:Fraunces,Georgia,serif;font-size:clamp(3rem,12vw,8rem);line-height:1;color:color-mix(in srgb,var(--text) 16%,transparent);white-space:nowrap;overflow:hidden}
 @media not (prefers-reduced-motion: reduce){.hero-a{opacity:0;transform:translateY(24px);filter:blur(5px);animation:rise .9s ease-out forwards}.hero-a:nth-child(2){animation-delay:.16s}.hero-a:nth-child(3){animation-delay:.32s}.hero-v{opacity:0;transform:translateY(20px) scale(.96);filter:blur(5px);animation:rise 1s ease-out .5s forwards}.scrollcue{animation:bob 2.4s ease-out 1.4s infinite}.reveal-item{opacity:.001;transform:translateY(18px);filter:blur(5px);transition:opacity .5s ease-out,transform .5s ease-out,filter .5s ease-out}.reveal-item.on{opacity:1;transform:none;filter:none}}
 @keyframes rise{to{opacity:1;transform:none;filter:none}}
-@media (prefers-reduced-motion: reduce){.reveal-item{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.scrollcue,.hero-a,.hero-v{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}}
+@media (prefers-reduced-motion: reduce){.reveal-item{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.scrollcue,.hero-a,.hero-v{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}.btn:active,.sw:active,#dock .card:hover img{transform:none!important}}
+@media (prefers-contrast: more){.btn-p{outline:2px solid var(--text);outline-offset:2px}.sw[aria-pressed="true"]{outline:2px solid var(--text);outline-offset:1px}}
+@media (hover:none){#dock .card:hover img{transform:none}}
 ::view-transition-new(root){animation:none}
 </style>
 </head>
@@ -76,8 +91,8 @@ footer{border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent);paddi
 <div class="hero-a eyebrow">SMALL DOCK · KEPT HONEST</div>
 <h1 id="h1" class="hero-a">So, we had to do a <em style="font-style:italic;color:var(--accent)">project.</em></h1>
 <p class="lead hero-a">One dock. Four switches. A threshold that decides when a ship is full.</p>
-<p class="hero-a"><a class="btn btn-p" href="#dock">See the circuit</a> <a class="btn btn-s" href="#play">Pulse a ship</a></p>
-<figure class="hero-visual hero-v" style="margin:28px 0 0"><img src="../hardware/screenshots/full-schematic.png" alt="Final Proteus schematic"><figcaption class="cap">As built in Proteus. Subsystem crops below.</figcaption></figure>
+<p class="hero-a"><a class="btn btn-p" href="#play">Pulse arrival</a> <a class="btn btn-s" href="#dock">See the circuit</a></p>
+<figure class="hero-visual hero-v" style="margin:28px 0 0"><img src="../hardware/screenshots/full-schematic.png" alt="Final Proteus schematic" width="2121" height="1281" loading="lazy" decoding="async" onerror="this.style.display='none'"><figcaption class="cap">As built in Proteus. Subsystem crops below.</figcaption></figure>
 <div class="scrollcue hero-v">scroll gently ↓</div>
 </section>
 <section class="wrap" aria-labelledby="h-course"><div class="reveal-item eyebrow">THE COURSE</div><h2 id="h-course">CSE 4206, <em>unhurried.</em></h2><p class="lead reveal-item">Digital Logic Design Lab · IUT Summer 2024–2025 · Proteus · 74LS TTL</p>
@@ -85,10 +100,10 @@ footer{border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent);paddi
 <p class="lead reveal-item">Accumulate, compare, display, depart. A full ship clears the dock by itself.</p>
 <div class="chips reveal-item"><span>MD. Sadman Saif Zarif</span><span>Ayesha Chowdhury Aronti</span><span>Sanjid Ahsan</span></div></section>
 <section class="wrap" id="dock" aria-labelledby="h-dock"><div class="reveal-item eyebrow">THE DOCK</div><h2 id="h-dock">One schematic, <em>four corners.</em></h2><div class="grid2">
-<div class="card reveal-item"><div class="num">01</div><h2>OR-tree <em>validation</em></h2><p>Empty ships are turned away before anything latches.</p><img src="../hardware/screenshots/01-input-validation.png" alt="Input validation" style="width:100%;border-radius:12px"></div>
-<div class="card reveal-item"><div class="num">02</div><h2>Adder plus <em>memory</em></h2><p>U7 adds SW and Q. U6 keeps the running total.</p><img src="../hardware/screenshots/02-accumulator.png" alt="Accumulator" style="width:100%;border-radius:12px"></div>
-<div class="card reveal-item"><div class="num">03</div><h2>Readable <em>decimal</em></h2><p>Q of 10 or more gets a plus-six correction.</p><img src="../hardware/screenshots/03-bcd-display.png" alt="BCD display" style="width:100%;border-radius:12px"></div>
-<div class="card reveal-item"><div class="num">04</div><h2>A comparator <em>decides</em></h2><p>Yellow below, red over, green exact. Green counts and clears.</p><img src="../hardware/screenshots/04-comparator-counter.png" alt="Comparator" style="width:100%;border-radius:12px"></div>
+<div class="card reveal-item"><div class="num">01</div><h2>OR-tree <em>validation</em></h2><p>Empty ships are turned away before anything latches.</p><img src="../hardware/screenshots/01-input-validation.png" alt="Input validation" style="width:100%;border-radius:12px" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>
+<div class="card reveal-item"><div class="num">02</div><h2>Adder plus <em>memory</em></h2><p>U7 adds SW and Q. U6 keeps the running total.</p><img src="../hardware/screenshots/02-accumulator.png" alt="Accumulator" style="width:100%;border-radius:12px" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>
+<div class="card reveal-item"><div class="num">03</div><h2>Readable <em>decimal</em></h2><p>Q of 10 or more gets a plus-six correction.</p><img src="../hardware/screenshots/03-bcd-display.png" alt="BCD display" style="width:100%;border-radius:12px" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>
+<div class="card reveal-item"><div class="num">04</div><h2>A comparator <em>decides</em></h2><p>Yellow below, red over, green exact. Green counts and clears.</p><img src="../hardware/screenshots/04-comparator-counter.png" alt="Comparator" style="width:100%;border-radius:12px" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>
 </div></section>
 <section class="wrap" id="steps" aria-labelledby="h-steps"><div class="reveal-item eyebrow">STEPS</div><h2 id="h-steps">Slow freight, <em>five moves.</em></h2>
 <div class="card reveal-item"><div class="num">1</div><p>Set cargo on SW0–SW3. All low means no pulse.</p></div>
@@ -113,11 +128,11 @@ document.getElementById('theme').addEventListener('click',function(ev){
 var Q=0,dep=0,SW=[0,0,0,0],BV=[0,0,0,1];
 function w(){return SW[0]+SW[1]*2+SW[2]*4+SW[3]*8}function bv(){return BV[0]+BV[1]*2+BV[2]*4+BV[3]*8}
 function $(id){return document.getElementById(id)}
-function render(m){var B=bv(),t=Q>=10?1:0,u=Q>=10?Q-10:Q,c=Q<B?'A<B':Q>B?'A>B':'A=B';$('t').textContent=t;$('u').textContent=u;$('c').textContent=dep;$('ly').className='dot'+(c==='A<B'?' on-y':'');$('lr').className='dot'+(c==='A>B'?' on-r':'');$('lg').className='dot'+(c==='A=B'?' on-g':'');$('trace').textContent='SW '+Q+' B '+B+' '+c+' dep '+dep+(m?'\n'+m:'');}
+function render(m){var B=bv(),S=w(),t=Q>=10?1:0,u=Q>=10?Q-10:Q,c=Q<B?'A<B':Q>B?'A>B':'A=B';$('t').textContent=t;$('u').textContent=u;$('c').textContent=dep;$('ly').className='dot'+(c==='A<B'?' on-y':'');$('lr').className='dot'+(c==='A>B'?' on-r':'');$('lg').className='dot'+(c==='A=B'?' on-g':'');$('trace').textContent='SW '+S+' Q '+Q+' B '+B+' '+c+' dep '+dep+(m?'\n'+m:'');}
 function sync(){for(var i=0;i<4;i++){$('s'+i).setAttribute('aria-pressed',SW[i]?'true':'false');$('b'+i).setAttribute('aria-pressed',BV[i]?'true':'false');}}
 for(var i=0;i<4;i++)(function(i){$('s'+i).onclick=function(){SW[i]^=1;sync();render();};$('b'+i).onclick=function(){BV[i]^=1;sync();render();};})(i);
 sync();render('Ready.');
-$('go').onclick=function(){var c=w();if(!c){render('Empty ship rejected.');return;}Q=(Q+c)%16;var B=bv();if(Q===B){dep=(dep+1)%10;var q=Q;Q=0;render('Full ship: '+q+'->00, count '+dep);}else render('Loaded '+c+' -> '+Q);};
+$('go').onclick=function(){var c=w();if(!c){render('Empty ship rejected.');return;}Q=(Q+c)%16;var B=bv();if(Q===B){dep=(dep+1)%10;var q=Q;Q=0;render('Full ship: '+q+'->00, count '+dep);var d=$('c');d.classList.add('hot');setTimeout(function(){d.classList.remove('hot')},1200);}else render('Loaded '+c+' -> '+Q);};
 $('rs').onclick=function(){Q=0;dep=0;render('Reset.');};
 })();</script>
 </body>
