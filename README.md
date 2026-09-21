@@ -69,6 +69,16 @@ Open `.pdsprj` in Proteus 8 Professional. Set capacity `B0-3`, pulse cargo `SW0-
 
 ICs: `U1 74LS32, U2 74LS08, U3/U4/U11 74LS47, U5/U7 74LS283, U6 74LS193, U8 74LS04, U9 74LS85, U10 74LS90`.
 
+## Site
+
+Interactive story + simulator in `story/index.html` (single file, warm Comfort theme):
+
+```powershell
+cd ship-cargo-loading-system
+python3 -m http.server 8001
+# open http://localhost:8001/story/
+```
+
 ## Demo
 
 1. Capacity `1000` (8). Cargo `0011` (3) -> dock `03`, Yellow, count `0`.
@@ -84,6 +94,7 @@ Per-member scripts: `docs/demo-guide.md`.
 README.md
 docs/final-report.pdf
 docs/demo-guide.md
+story/index.html
 hardware/ship-cargo-loading-system.pdsprj
 hardware/screenshots/
 assets/cover.png
