@@ -11,6 +11,14 @@ Team: MD. Sadman Saif Zarif `240041221`, Ayesha Chowdhury Aronti `240041243`, Sa
 Video: https://youtu.be/494xMRGCugs
 Report: `docs/final-report.pdf`
 
+## Final circuit
+
+![full schematic](hardware/screenshots/full-schematic.png)
+
+| Input | Accumulator | BCD display | Comparator + counter |
+|---|---|---|---|
+| ![input](hardware/screenshots/01-input-validation.png) | ![accumulator](hardware/screenshots/02-accumulator.png) | ![bcd](hardware/screenshots/03-bcd-display.png) | ![comparator](hardware/screenshots/04-comparator-counter.png) |
+
 ## How it works — 5 phases
 
 1. **Input validation:** `SW0-3` -> `U1:A/B/C 74LS32` OR-tree. Zero = reject. Non-zero + enable -> `U2:A 74LS08` -> `U8:A 74LS04` -> active-LOW `PL` on `U6`.
@@ -20,6 +28,31 @@ Report: `docs/final-report.pdf`
 5. **Departure + reset:** `QA=B -> U10 CKA 74LS90 + Green LED + U6 MR`. `U11 74LS47` shows count.
 
 See `docs/final-report.pdf` and `docs/demo-guide.md` for full details.
+
+## Scope vs proposal
+
+Shipped from `idea_full.md`:
+- [x] 4-bit cargo `0-15`, zero-reject validation (as `74LS32` OR-tree, not `74LS147`)
+- [x] Adder + register accumulate (`U7 + U6`)
+- [x] `74LS85` vs threshold, tri-LED, `74LS47` 7-seg
+- [x] Departure count (as `74LS90` on `QA=B`, not `74LS163` arrivals)
+- [x] Proteus SPICE verified, all 7 categories covered
+
+Out of scope — intentionally dropped for SPICE stability, see report §5:
+- [ ] Dock 2 + `74LS157` overflow routing
+- [ ] `74LS173` threshold register
+- [ ] 5-state `74LS76` FSM (`IDLE/LOADING/OVERFLOW/STORM/DRAINING`)
+- [ ] Storm drain `-2/tick`, `74LS164` animation, MOD divider
+- [ ] 5-bit `0-31` + `74185A`, arrival/`TH_LOAD` buttons, manual `MR`
+
+## Roadmap
+
+- [ ] Dual-dock overflow with `74LS157` + `74LS74` latch
+- [ ] Registered threshold (`74LS173`) + `74LS85` 5-bit compare incl. `Q4`
+- [ ] Clocked FSM + `ENABLE` input lock + `DRAIN_DONE` auto-return
+- [ ] Drain engine `D-2`, `1->0` clamp, per-dock gating
+- [ ] Ring-counter LED animation, MOD-16 tick
+- [ ] Extensions: cargo-type DEMUX, log shift-register, Dock2 alert, variable drain
 
 ## Hardware
 
