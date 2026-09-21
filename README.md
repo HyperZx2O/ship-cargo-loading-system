@@ -71,12 +71,12 @@ ICs: `U1 74LS32, U2 74LS08, U3/U4/U11 74LS47, U5/U7 74LS283, U6 74LS193, U8 74LS
 
 ## Site
 
-Interactive story + simulator in `story/index.html` (single file, warm Comfort theme):
+Interactive story + simulator in `index.html` (single file, warm Comfort theme), live at `https://hyperzx2o.github.io/ship-cargo-loading-system/`:
 
 ```powershell
 cd ship-cargo-loading-system
 python3 -m http.server 8001
-# open http://localhost:8001/story/
+# open http://localhost:8001/
 ```
 
 ## Demo
@@ -92,9 +92,9 @@ Per-member scripts: `docs/demo-guide.md`.
 
 ```
 README.md
+index.html
 docs/final-report.pdf
 docs/demo-guide.md
-story/index.html
 hardware/ship-cargo-loading-system.pdsprj
 hardware/screenshots/
 assets/cover.png
