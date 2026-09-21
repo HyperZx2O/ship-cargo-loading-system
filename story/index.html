@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ship Cargo Loading System — A Lab Story</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+<div class="progress" id="bar"></div>
+<div class="wrap">
+  <section class="act reveal"><div class="kicker">scroll</div><h1 class="hero-line">So, we had to do a project.</h1><p class="sub">One dock. Four switches. A threshold that decides everything.</p></section>
+  <section class="act reveal"><div class="kicker">the course</div><h2 class="hero-line">CSE 4206 — Digital Logic Design Lab</h2><p class="sub">IUT · Summer 2024–2025 · Proteus · 74LS TTL</p></section>
+  <section class="act reveal"><div class="kicker">the build</div><h2 class="title">SHIP CARGO <span>LOADING SYSTEM</span></h2><p class="sub">Accumulate · Compare · Display · Depart. Full ship clears the dock by itself.</p><div class="team"><span>MD. Sadman Saif Zarif</span><span>Ayesha Chowdhury Aronti</span><span>Sanjid Ahsan</span></div></section>
+  <div class="stage" id="circuit">
+    <div class="kicker">the circuit</div>
+    <div class="flow"></div>
+    <div class="circuit"><img src="../hardware/screenshots/full-schematic.png" alt="Final Proteus schematic"></div>
+    <div class="pins">
+      <div class="pin"><img src="../hardware/screenshots/01-input-validation.png" alt="Input"><div>01 · OR-tree validation</div></div>
+      <div class="pin"><img src="../hardware/screenshots/02-accumulator.png" alt="Accumulator"><div>02 · U7 + U6 loop</div></div>
+      <div class="pin"><img src="../hardware/screenshots/03-bcd-display.png" alt="BCD"><div>03 · +6 BCD 0–15</div></div>
+      <div class="pin"><img src="../hardware/screenshots/04-comparator-counter.png" alt="Comparator"><div>04 · U9 + U10 departures</div></div>
+    </div>
+  </div>
+  <section class="act reveal"><div class="kicker">how it flows</div><div class="steps">
+    <div class="step"><b>OR-tree rejects empties.</b> <span class="sub">SW=0 → no pulse, no load.</span></div>
+    <div class="step"><b>Adder feeds the register.</b> <span class="sub">U7 adds SW+Q, PL latches U6.</span></div>
+    <div class="step"><b>BCD makes it readable.</b> <span class="sub">Q≥10 → +6, tens shows 1.</span></div>
+    <div class="step"><b>Comparator decides.</b> <span class="sub">Yellow below, red over, green exact.</span></div>
+    <div class="step"><b>Full ship sails itself.</b> <span class="sub">QA=B → count+1, MR clears to 00.</span></div>
+  </div></section>
+  <section class="act reveal"><div class="kicker">play it</div><h2>Pulse a ship through.</h2>
+    <div class="bench">
+      <div class="card"><div class="swrow">
+        <button class="sw" id="s0">SW0</button><button class="sw" id="s1">SW1</button><button class="sw" id="s2">SW2</button><button class="sw" id="s3">SW3</button>
+      </div><div class="swrow" style="margin-top:8px">
+        <button class="sw" id="b0">B0</button><button class="sw" id="b1">B1</button><button class="sw" id="b2">B2</button><button class="sw" id="b3">B3</button>
+      </div><button class="btn btn-pulse" id="go">Pulse Arrival</button><button class="btn btn-ghost" id="rs">Reset</button></div>
+      <div class="card"><div class="digit"><div class="d" id="t">0</div><div class="d" id="u">0</div><div class="d" id="c">0</div></div>
+      <div class="leds"><span><span class="dot" id="ly"></span>YELLOW</span><span><span class="dot" id="lr"></span>RED</span><span><span class="dot" id="lg"></span>GREEN</span></div>
+      <div class="trace" id="trace">—</div></div>
+    </div>
+  </section>
+  <section class="end reveal"><div class="kicker">proof</div><h2>Report · pdsprj · video</h2><p class="sub"><a href="../docs/final-report.pdf">final-report.pdf</a> · <a href="../hardware/ship-cargo-loading-system.pdsprj">pdsprj</a> · <a href="https://youtu.be/494xMRGCugs">demo video</a></p></section>
+</div>
+<script src="story.js"></script>
+</body>
+</html>
