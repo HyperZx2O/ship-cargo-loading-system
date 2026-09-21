@@ -57,6 +57,9 @@ img{max-width:100%}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
 @media(max-width:820px){.grid2{grid-template-columns:minmax(0,1fr)}}
 .card{background:var(--bg-surface);border-radius:18px;padding:22px;box-shadow:0 14px 30px -24px color-mix(in srgb,var(--accent) 40%,transparent)}
+.console{padding:26px}
+.console-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:22px;align-items:start}
+@media(max-width:820px){.console-grid{grid-template-columns:minmax(0,1fr)}}
 .num{font-family:Fraunces,Georgia,serif;font-size:2.2rem;color:var(--accent)}
 #dock .card{box-shadow:0 22px 44px -26px color-mix(in srgb,var(--accent) 55%,transparent)}
 #dock .num{font-size:2.8rem}
@@ -81,6 +84,11 @@ footer{border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent);paddi
 @media (prefers-reduced-motion: reduce){.reveal-item{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.scrollcue,.hero-a,.hero-v{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}.btn:active,.sw:active,#dock .card:hover img{transform:none!important}}
 @media (prefers-contrast: more){.btn-p{outline:2px solid var(--text);outline-offset:2px}.sw[aria-pressed="true"]{outline:2px solid var(--text);outline-offset:1px}}
 @media (hover:none){#dock .card:hover img{transform:none}}
+.vid{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:var(--bg)}
+.vid>img,.vid button>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vid button{position:absolute;inset:0;width:100%;border:0;background:linear-gradient(transparent 40%,color-mix(in srgb,var(--bg) 72%,transparent));color:var(--text);font:inherit;font-weight:700;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:18px;min-height:44px}
+.vid button span.play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;background:var(--accent);color:#fff8ef;display:inline-flex;align-items:center;justify-content:center}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 ::view-transition-new(root){animation:none}
 </style>
 </head>
@@ -98,7 +106,7 @@ footer{border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent);paddi
 <section class="wrap" aria-labelledby="h-course"><div class="reveal-item eyebrow">THE COURSE</div><h2 id="h-course">CSE 4206, <em>unhurried.</em></h2><p class="lead reveal-item">Digital Logic Design Lab · IUT Summer 2024–2025 · Proteus · 74LS TTL</p>
 <h2 class="reveal-item" style="margin-top:26px">Ship Cargo <em>Loading System</em></h2>
 <p class="lead reveal-item">Accumulate, compare, display, depart. A full ship clears the dock by itself.</p>
-<div class="chips reveal-item"><span>MD. Sadman Saif Zarif</span><span>Ayesha Chowdhury Aronti</span><span>Sanjid Ahsan</span></div></section>
+<div class="chips reveal-item"><span>MD. Sadman Saif Zarif<small>Input &amp; Storage</small></span><span>Ayesha Chowdhury Aronti<small>Visualization</small></span><span>Sanjid Ahsan<small>Automation</small></span></div></section>
 <section class="wrap" id="dock" aria-labelledby="h-dock"><div class="reveal-item eyebrow">THE DOCK</div><h2 id="h-dock">One schematic, <em>four corners.</em></h2><div class="grid2">
 <div class="card reveal-item"><div class="num">01</div><h2>OR-tree <em>validation</em></h2><p>Empty ships are turned away before anything latches.</p><img src="../hardware/screenshots/01-input-validation.png" alt="Input validation" style="width:100%;border-radius:12px" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>
 <div class="card reveal-item"><div class="num">02</div><h2>Adder plus <em>memory</em></h2><p>U7 adds SW and Q. U6 keeps the running total.</p><img src="../hardware/screenshots/02-accumulator.png" alt="Accumulator" style="width:100%;border-radius:12px" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>
@@ -111,10 +119,15 @@ footer{border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent);paddi
 <div class="card reveal-item" style="margin-top:12px"><div class="num">3</div><p>Read tens and units. Ten and above is corrected.</p></div>
 <div class="card reveal-item" style="margin-top:12px"><div class="num">4</div><p>Compare against B0–B3. Watch the three lamps.</p></div>
 <div class="card reveal-item" style="margin-top:12px"><div class="num">5</div><p>On exact match, departures rise by one and the dock returns to zero.</p></div></section>
-<section class="wrap" id="play" aria-labelledby="h-play"><div class="reveal-item eyebrow">PLAY</div><h2 id="h-play">Pulse a ship <em>yourself.</em></h2>
-<div class="grid2"><div class="card reveal-item"><p><b>Cargo</b></p><div class="swrow"><button class="sw" id="s0" type="button" aria-pressed="false">1</button><button class="sw" id="s1" type="button" aria-pressed="false">2</button><button class="sw" id="s2" type="button" aria-pressed="false">4</button><button class="sw" id="s3" type="button" aria-pressed="false">8</button></div><p style="margin-top:12px"><b>Capacity</b></p><div class="swrow"><button class="sw" id="b0" type="button" aria-pressed="false">1</button><button class="sw" id="b1" type="button" aria-pressed="false">2</button><button class="sw" id="b2" type="button" aria-pressed="false">4</button><button class="sw" id="b3" type="button" aria-pressed="false">8</button></div><p><button class="btn btn-p" id="go" type="button">Pulse arrival</button> <button class="btn btn-s" id="rs" type="button">Reset</button></p></div>
-<div class="card reveal-item"><div class="digits"><div class="dg" id="t">0</div><div class="dg" id="u">0</div><div class="dg" id="c">0</div></div><div class="leds"><span><span class="dot" id="ly"></span>Yellow</span><span><span class="dot" id="lr"></span>Red</span><span><span class="dot" id="lg"></span>Green</span></div><div class="trace" id="trace">—</div></div></div></section>
-<section class="wrap" id="proof" aria-labelledby="h-proof"><div class="reveal-item eyebrow">PROOF</div><h2 id="h-proof">Report, file, <em>film.</em></h2><p class="lead reveal-item"><a href="../docs/final-report.pdf">final-report.pdf</a> · <a href="../hardware/ship-cargo-loading-system.pdsprj">pdsprj</a> · <a href="https://youtu.be/494xMRGCugs">demo video</a></p></section>
+<section class="wrap" id="parts" aria-labelledby="h-parts"><div class="reveal-item eyebrow">PARTS</div><h2 id="h-parts">Eleven chips, no more.</h2><div class="grid2">
+<div class="card reveal-item"><p><b>U1</b> 74LS32 · OR-tree + BCD detect<br><b>U2</b> 74LS08 · pulse gate + detect<br><b>U3 U4 U11</b> 74LS47 · displays<br><b>U5 U7</b> 74LS283 · correct + accumulate</p></div>
+<div class="card reveal-item"><p><b>U6</b> 74LS193 · dock register<br><b>U8</b> 74LS04 · PL invert<br><b>U9</b> 74LS85 · comparator<br><b>U10</b> 74LS90 · departures<br><b>R1</b> 10k pull-up · <b>D1–D3</b> lamps</p></div>
+</div></section>
+<section class="wrap" id="dropped" aria-labelledby="h-drop"><div class="reveal-item eyebrow">DROPPED</div><h2 id="h-drop">What we cut.</h2><div class="card reveal-item"><p>Dual-dock routing, the 5-state storm FSM, and the drain engine were removed after Proteus SPICE refused to converge. The comparator outputs already carried the three states that mattered. Full reasoning in <a href="../docs/final-report.pdf">report §5</a>.</p></div></section>
+<section class="wrap" id="play" aria-labelledby="h-play"><h2 id="h-play">Pulse a ship <em>yourself.</em></h2>
+<div class="card reveal-item console"><div class="console-grid"><div><p><b>Cargo</b></p><div class="swrow"><button class="sw" id="s0" type="button" aria-pressed="false">1</button><button class="sw" id="s1" type="button" aria-pressed="false">2</button><button class="sw" id="s2" type="button" aria-pressed="false">4</button><button class="sw" id="s3" type="button" aria-pressed="false">8</button></div><p style="margin-top:12px"><b>Capacity</b></p><div class="swrow"><button class="sw" id="b0" type="button" aria-pressed="false">1</button><button class="sw" id="b1" type="button" aria-pressed="false">2</button><button class="sw" id="b2" type="button" aria-pressed="false">4</button><button class="sw" id="b3" type="button" aria-pressed="false">8</button></div><p><button class="btn btn-p" id="go" type="button">Pulse arrival</button> <button class="btn btn-s" id="rs" type="button">Reset</button></p><p><button class="btn btn-s" id="tour" type="button">Run 6-step demo</button></p></div>
+<div class="card reveal-item"><div class="digits"><div class="dg" id="t">0</div><div class="dg" id="u">0</div><div class="dg" id="c">0</div></div><div class="leds"><span><span class="dot" id="ly"></span>Yellow</span><span><span class="dot" id="lr"></span>Red</span><span><span class="dot" id="lg"></span>Green</span></div><div class="trace" id="trace" aria-live="polite" aria-atomic="true">—</div></div></div></div></section>
+<section class="wrap" id="proof" aria-labelledby="h-proof"><div class="reveal-item eyebrow">PROOF</div><h2 id="h-proof">Report, file, film.</h2><p class="lead reveal-item">Read the report, open the Proteus file, watch the demo.</p><div class="proof-links reveal-item"><a href="../docs/final-report.pdf">final-report.pdf</a><a href="../hardware/ship-cargo-loading-system.pdsprj">Proteus file</a><a href="https://youtu.be/494xMRGCugs">demo video</a></div><div class="card reveal-item" style="margin-top:14px"><div class="vid" id="vid"><button type="button" id="vidbtn" aria-label="Play demo video"><img id="vidimg" src="https://i.ytimg.com/vi/494xMRGCugs/hqdefault.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"><span class="play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div></div></section>
 </main>
 <footer><div class="wrap"><div class="wordmark" aria-hidden="true">Ship Cargo Loading System</div><p style="color:var(--text-dim);font-size:.9rem">Final submission only · <a href="#top">back to top ↑</a></p></div></footer>
 <script>(function(){if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.reveal-item').forEach(function(el){el.style.opacity='';el.style.transform='';el.style.filter='';});}
@@ -132,8 +145,12 @@ function render(m){var B=bv(),S=w(),t=Q>=10?1:0,u=Q>=10?Q-10:Q,c=Q<B?'A<B':Q>B?'
 function sync(){for(var i=0;i<4;i++){$('s'+i).setAttribute('aria-pressed',SW[i]?'true':'false');$('b'+i).setAttribute('aria-pressed',BV[i]?'true':'false');}}
 for(var i=0;i<4;i++)(function(i){$('s'+i).onclick=function(){SW[i]^=1;sync();render();};$('b'+i).onclick=function(){BV[i]^=1;sync();render();};})(i);
 sync();render('Ready.');
-$('go').onclick=function(){var c=w();if(!c){render('Empty ship rejected.');return;}Q=(Q+c)%16;var B=bv();if(Q===B){dep=(dep+1)%10;var q=Q;Q=0;render('Full ship: '+q+'->00, count '+dep);var d=$('c');d.classList.add('hot');setTimeout(function(){d.classList.remove('hot')},1200);}else render('Loaded '+c+' -> '+Q);};
+function doPulse(){var c=w();if(!c){render('Empty ship rejected.');return;}Q=(Q+c)%16;var B=bv();if(Q===B){dep=(dep+1)%10;var q=Q;Q=0;render('Full ship: '+q+'->00, count '+dep);var d=$('c');d.classList.add('hot');setTimeout(function(){d.classList.remove('hot')},1200);}else render('Loaded '+c+' -> '+Q);}
+$('go').onclick=doPulse;
+$('tour').onclick=function(){var btn=$('tour');if(btn.disabled)return;btn.disabled=true;var i=0;var seq=[function(){Q=0;dep=0;BV=[0,0,0,1];SW=[0,0,0,0];sync();render('1/6 Setup: B=8, Q=00, dep=0.');},function(){SW=[1,1,0,0];sync();render('2/6 Cargo 3.');doPulse();},function(){SW=[1,0,1,0];sync();render('3/6 Cargo 5 -> 08 exact.');doPulse();},function(){SW=[1,0,1,0];sync();render('4/6 Cargo 5 -> 05.');doPulse();},function(){SW=[1,0,1,0];sync();render('5/6 Cargo 5 -> 10 overload, red.');doPulse();},function(){BV=[0,1,0,1];sync();render('6/6 B=10 matches: count, clear.');doPulse();}];(function next(){if(i>=seq.length){btn.disabled=false;return;}seq[i]();i++;setTimeout(next,1100);})();};
 $('rs').onclick=function(){Q=0;dep=0;render('Reset.');};
+$('vidbtn').onclick=function(){var v=$('vid');var f=document.createElement('iframe');f.src='https://www.youtube.com/embed/494xMRGCugs?autoplay=1';f.title='Ship Cargo Loading System demo';f.loading='lazy';f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';f.allowFullscreen=true;v.replaceChildren(f);};
+(function(){var hi=new Image();hi.onload=function(){if(hi.naturalWidth>300){var im=document.getElementById('vidimg');if(im)im.src=hi.src;}};hi.src='https://i.ytimg.com/vi/494xMRGCugs/maxresdefault.jpg';})();
 })();</script>
 </body>
 </html>
