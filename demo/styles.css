@@ -1,0 +1,63 @@
+/* Hallmark · pre-emit critique: P5 H4 E5 S4 R5 V5
+ * Genre: technical · Macrostructure: Workbench · Theme: Labbench (dark · mono/grotesk · amber)
+ * Audience: evaluators/students · Use: pulse cargo, see dock state · Tone: technical
+ */
+:root{
+  --color-paper:#0b0e13;
+  --color-paper-2:#121722;
+  --color-paper-3:#1a2230;
+  --color-ink:#e8ecf3;
+  --color-muted:#9aa6bd;
+  --color-line:#26314a;
+  --color-accent:#f5a524;
+  --color-green:#2fbf71;
+  --color-yellow:#f5c518;
+  --color-red:#f4504c;
+  --color-focus:#7cc4ff;
+  --font-display:"Space Grotesk",system-ui,sans-serif;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+html,body{overflow-x:clip}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--color-paper);color:var(--color-ink);
+  font-family:var(--font-body);line-height:1.5;
+}
+a{color:var(--color-focus)}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.top h1{font-family:var(--font-display);font-style:normal;font-weight:700;font-size:clamp(22px,4vw,34px);margin:8px 0;overflow-wrap:anywhere;min-width:0}
+.kicker{font-family:var(--font-mono);font-size:12px;color:var(--color-muted);letter-spacing:.08em;text-transform:uppercase}
+.bench{display:grid;grid-template-columns:minmax(0,280px) minmax(0,1fr) minmax(0,300px);gap:14px;margin-top:16px}
+@media(max-width:900px){.bench{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--color-paper-2);border:1px solid var(--color-line);border-radius:12px;padding:14px}
+.card h2{font-family:var(--font-display);font-style:normal;font-size:15px;margin:0 0 10px;color:var(--color-ink)}
+.swrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.sw{border:1px solid var(--color-line);background:var(--color-paper-3);color:var(--color-ink);border-radius:8px;padding:10px 0;font-family:var(--font-mono);cursor:pointer}
+.sw[aria-pressed="true"]{border-color:var(--color-accent);box-shadow:0 0 0 1px var(--color-accent) inset}
+.sw small{display:block;color:var(--color-muted);font-size:11px}
+.btn{width:100%;margin-top:10px;border:0;border-radius:8px;padding:12px;font-weight:700;cursor:pointer;font-family:var(--font-display);font-style:normal}
+.btn-pulse{background:var(--color-accent);color:#1a1200}
+.btn-ghost{background:transparent;border:1px solid var(--color-line);color:var(--color-ink);margin-top:8px}
+.btn:focus-visible,.sw:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
+.displays{display:flex;gap:12px;flex-wrap:wrap}
+.sev{background:#05070b;border:1px solid var(--color-line);border-radius:10px;padding:10px;text-align:center;min-width:0}
+.sev .lab{font-family:var(--font-mono);font-size:11px;color:var(--color-muted)}
+.digit{display:flex;gap:10px;justify-content:center;margin-top:6px}
+.d{background:#0a0d12;border-radius:6px;padding:8px 10px;font-family:var(--font-mono);font-size:44px;line-height:1;color:#ff5b4d;text-shadow:0 0 12px rgba(255,60,40,.55);min-width:64px}
+.d.dim{color:#3a1414;text-shadow:none}
+.leds{display:flex;gap:10px;margin-top:12px}
+.led{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;color:var(--color-muted)}
+.dot{width:14px;height:14px;border-radius:50%;background:#2a3348;border:1px solid var(--color-line)}
+.dot.on-yellow{background:var(--color-yellow);box-shadow:0 0 10px var(--color-yellow)}
+.dot.on-red{background:var(--color-red);box-shadow:0 0 10px var(--color-red)}
+.dot.on-green{background:var(--color-green);box-shadow:0 0 10px var(--color-green)}
+.trace{font-family:var(--font-mono);font-size:12px;color:var(--color-muted);white-space:pre-wrap}
+.trace b{color:var(--color-ink);font-weight:600}
+figure{margin:14px 0 0;border:1px solid var(--color-line);border-radius:12px;overflow:hidden;background:var(--color-paper-2)}
+figure img{width:100%;display:block}
+figcaption{padding:8px 12px;font-size:12px;color:var(--color-muted)}
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.presets button{flex:1 1 140px;border:1px solid var(--color-line);background:var(--color-paper-3);color:var(--color-ink);border-radius:8px;padding:8px;cursor:pointer;white-space:nowrap}
+.note{font-size:13px;color:var(--color-muted)}
